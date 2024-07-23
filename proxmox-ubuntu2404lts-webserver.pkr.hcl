@@ -35,6 +35,13 @@ variable "ssh_pass" {
   sensitive = true
 }
 
+locals {
+  user_data = {
+    ssh_user = var.ssh_user
+    ssh_pass = sha512(var.ssh_pass)
+  }
+}
+
 source "proxmox-iso" "ubuntu-2404lts-webserver" {
   proxmox_url              = "${var.proxmox_api_url}"
   username                 = "${var.proxmox_api_token_id}"
@@ -85,12 +92,14 @@ source "proxmox-iso" "ubuntu-2404lts-webserver" {
   boot      = "c"
   boot_wait = "5s"
 
-  http_directory = "http"
+  http_content = {
+    "/meta-data" = file("http/meta-data")
+    "/user-data" = templatefile("http/user-data.tpl", local.user_data)
+  }
 
-  ssh_username = "${var.ssh_user}"
-  ssh_password = "${var.ssh_pass}"
-
-  ssh_timeout = "20m"
+  ssh_username = var.ssh_user
+  ssh_password = var.ssh_pass
+  ssh_timeout  = "20m"
 }
 
 build {
