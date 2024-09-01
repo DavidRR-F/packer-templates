@@ -42,7 +42,7 @@ locals {
   }
 }
 
-source "proxmox-iso" "ubuntu-2404lts-webserver" {
+source "proxmox-iso" "ubuntu-2404lts" {
   proxmox_url              = "${var.proxmox_api_url}"
   username                 = "${var.proxmox_api_token_id}"
   token                    = "${var.proxmox_api_token_secret}"
@@ -103,8 +103,8 @@ source "proxmox-iso" "ubuntu-2404lts-webserver" {
 }
 
 build {
-  name    = "ubuntu-2404lts-webserver"
-  sources = ["source.proxmox-iso.ubuntu-2404lts-webserver"]
+  name    = "ubuntu-2404lts"
+  sources = ["source.proxmox-iso.ubuntu-2404lts"]
 
   provisioner "shell" {
     inline = [
